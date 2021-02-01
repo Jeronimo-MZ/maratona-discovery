@@ -38,6 +38,38 @@ body {
     white-space: nowrap;
     border-width: 0;
 }
+
+/* Abreviações =============================*/
+abbr {
+    border-bottom: none !important;
+    text-decoration: none !important; 
+}
+abbr[title]{
+    position: relative;
+}
+abbr[title]:hover::after,
+abbr[title]:focus::after {
+    content: attr(title);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -30px;
+    width: auto;
+    white-space: nowrap;
+    
+    background-color: #40404167;
+    color: #fff;
+    border-radius: .5rem;
+    padding: .2rem 1rem;
+    bottom: -125%;
+    max-width: 90vw;
+    overflow-x: auto;
+    font-size: 60%;
+}
+td abbr[title]:hover::after,
+td abbr[title]:focus::after {
+    font-size: inherit;
+}
 /*Titles ====================*/
 h2 {
     margin-top: 3.2rem;
@@ -141,6 +173,7 @@ header h1#logo {
     margin-top: 1rem;
     font-size: 2rem;
     line-height: 3rem;
+    text-align: center;
 }
 
 .card.total {
@@ -173,7 +206,7 @@ header h1#logo {
     background-color: white;
     font-weight: 400;
     padding: 1rem 2rem;
-    text-align: left;
+    text-align: center;
 }
 
 #data-table tbody tr {
@@ -186,6 +219,8 @@ header h1#logo {
 #data-table tbody td {
     background-color: white;
     padding: 1rem 2rem;
+    /* white-space: nowrap; */
+    text-align: left;
 }
 
 #data-table td.description {

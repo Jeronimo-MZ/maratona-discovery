@@ -79,7 +79,8 @@ const DOM = {
 
     innerHTMLTransaction(transaction, index) {
         const CssClass = (transaction.amount >0) ? 'income' : 'expense';
-        const amount = Utils.formatCurrency(transaction.amount)
+        const amount = Utils.createCurrencyTag(transaction.amount);
+
         const html = `
             <td class="description">${transaction.description}</td>
             <td class="${CssClass}">${amount}</td>
@@ -92,15 +93,15 @@ const DOM = {
     updateBalance(){
         document
             .getElementById("incomeDisplay")
-            .innerHTML = Utils.formatCurrency(Transactions.incomes());
+            .innerHTML = Utils.createCurrencyTag(Transactions.incomes());
         
         document
             .getElementById("expenseDisplay")
-            .innerHTML = Utils.formatCurrency(Transactions.expenses());
+            .innerHTML = Utils.createCurrencyTag(Transactions.expenses());
 
         document
             .getElementById("totalDisplay")
-            .innerHTML = Utils.formatCurrency(Transactions.total());
+            .innerHTML = Utils.createCurrencyTag(Transactions.total());
         
             document.querySelector('.card.total').style.backgroundColor = (Transactions.total() < 0) 
                                                                             ? 'var(--red)' 
@@ -118,6 +119,7 @@ const Utils =  {
         value = String(value).replace(/\D/g, '');
         
         value = Number(value)/100;
+
         
         value = value.toLocaleString('pt-BR', {
             style:'currency',
@@ -129,6 +131,43 @@ const Utils =  {
         
         // console.log();
     },
+    formatCurrencyShort (num) {
+        // fonte: https://idleminertycoon.fandom.com/wiki/Currency_Display
+        const signal = Number(num) < 0 ? '-' : '';
+        num = (signal === '-') ? -Number(num) : Number(num);
+        num = Number(num) / 100;
+        let res  = num; 
+        const K  = [10 ** 3,   'K'];   // Mil
+        const M  = [10 ** 6,   'M'];   // Milhão
+        const B  = [10 ** 9,   'B'];   // Bilhão
+        const T  = [10 ** 12,  'T'];   // Trilhão
+        const AA = [10 ** 15, 'aa'];   // Quadrilhão
+        const AB = [10 ** 18, 'ab'];   // Quintilhão
+        const AC = [10 ** 21, 'ac'];   // Sextilhão
+        const representation = [AC, AB, AA, T, B, M, K];
+    
+       for (let i = 0; i < representation.length; i++) {
+            if (num / representation[i][0] >= 1) {
+                res = +(num / representation[i][0]).toFixed(2) + representation[i][1];
+                break;
+            }
+        }
+    
+        return signal + 'MZN ' + res;
+    },
+    createCurrencyTag(value) {
+        let amount;
+        if (value > 10 ** 9 || value < -(10 ** 9)) {
+            amount =  Utils.formatCurrencyShort(value);
+            amount =  `<abbr tabindex="0" title="${Utils.formatCurrency(value)}">${amount}</abbr>`;
+        } else {
+            amount = Utils.formatCurrency(value); 
+            amount =  `<abbr tabindex="0" title="${amount}">${amount}</abbr>`;
+
+        }
+        return amount;
+    }
+    ,
     
     formatAmount(value) {
         value = Number(value.replace(/\.\,/g), "") * 100;
@@ -152,7 +191,7 @@ const Form = {
             date: Form.date.value,
         }
     },
-    validadeFields(fields){
+    validadeFields(){
             const {description, amount, date} = Form.getValues();
             if (description.trim() === '' || amount.trim() === '' || date.trim() === '') {
                 throw new Error("Por favor, preencha todos os campos");
