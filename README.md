@@ -1,2 +1,2 @@
-# maratona-discovery
-Projecto construido durante a Maratona Discovery da RocketSeat
+# maratona-discover
+Projecto construido durante a Maratona Discover da RocketSeat
